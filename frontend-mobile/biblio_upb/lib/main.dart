@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:biblio_upb/screens/auth_screen.dart';
+import 'package:biblio_upb/screens/etudiant/etudiant_app.dart';
+
 void main() => runApp(const BibliothequeApp());
 
 class BibliothequeApp extends StatelessWidget {
@@ -16,7 +18,7 @@ class BibliothequeApp extends StatelessWidget {
       home: const AuthScreen(),
       routes: {
         '/login': (_) => const AuthScreen(),
-        '/etudiant': (_) => const Scaffold(body: Center(child: Text('Séance 6'))),
+        '/etudiant': (_) => const EtudiantApp(),
       },
     );
   }
