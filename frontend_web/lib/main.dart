@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/auth_screen_web.dart';
+import 'screens/biblio/biblio_app.dart';
 
 void main() => runApp(const BibliothequeWebApp());
 
@@ -18,8 +19,9 @@ class BibliothequeWebApp extends StatelessWidget {
       home: const AuthScreenWeb(),
       routes: {
         '/login': (_) => const AuthScreenWeb(),
-        '/biblio': (_) => const Scaffold(body: Center(child: Text('Séance 8'))),
-        '/admin': (_) => const Scaffold(body: Center(child: Text('Séance 9'))),
+        '/biblio': (_) => const BiblioApp(),
+        '/admin': (_) => const Scaffold(
+            body: Center(child: Text('Séance 9'))),
       },
     );
   }
