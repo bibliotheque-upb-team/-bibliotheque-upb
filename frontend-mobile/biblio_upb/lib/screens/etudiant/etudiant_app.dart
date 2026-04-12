@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:biblio_upb/screens/etudiant/etudiant_home.dart';
 import 'package:biblio_upb/screens/etudiant/etudiant_catalogue.dart';
+import 'package:biblio_upb/screens/etudiant/etudiant_mes_livres.dart';
+import 'package:biblio_upb/screens/etudiant/etudiant_jeux.dart';
+import 'package:biblio_upb/screens/etudiant/etudiant_profil.dart';
 import 'package:biblio_upb/services/service_locator.dart';
 
 class EtudiantApp extends StatefulWidget {
@@ -16,9 +19,9 @@ class _EtudiantAppState extends State<EtudiantApp> {
   final List<Widget> _pages = [
     const EtudiantHome(),
     const EtudiantCatalogue(),
-    const Scaffold(body: Center(child: Text('Mes Livres - Séance 7'))),
-    const Scaffold(body: Center(child: Text('Jeux - Séance 7'))),
-    const Scaffold(body: Center(child: Text('Profil - Séance 7'))),
+    const EtudiantMesLivres(),
+    const EtudiantJeux(),
+    const EtudiantProfil(),
   ];
 
   Future<void> _deconnexion() async {
@@ -31,7 +34,8 @@ class _EtudiantAppState extends State<EtudiantApp> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF2563EB),
-        title: Text('Bibliothèque UPB', style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: Text('Bibliothèque UPB',
+            style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold)),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications, color: Colors.white),
