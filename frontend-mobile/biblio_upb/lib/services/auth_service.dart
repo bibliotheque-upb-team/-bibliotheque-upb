@@ -64,6 +64,9 @@ class AuthService {
   Future<String?> getUserType() async =>
       (await SharedPreferences.getInstance()).getString('userType');
 
+  Future<String?> getUserName() async =>
+      (await SharedPreferences.getInstance()).getString('userName');
+
   Future<void> deconnexion() async =>
       (await SharedPreferences.getInstance()).clear();
 

@@ -26,9 +26,9 @@ class GamificationService {
       int qId, int eId, List<int> rep) async {
     final h = await auth.authHeaders();
     final r = await http.post(
-        Uri.parse('$baseUrl/gamification/quiz/$qId/soumettre?etudiantId=$eId'),
+        Uri.parse('$baseUrl/gamification/quiz/$qId/soumettre'),
         headers: h,
-        body: jsonEncode(rep));
+        body: jsonEncode({'etudiantId': eId, 'reponses': rep}));
     if (r.statusCode == 200) return jsonDecode(r.body);
     throw Exception('Erreur');
   }

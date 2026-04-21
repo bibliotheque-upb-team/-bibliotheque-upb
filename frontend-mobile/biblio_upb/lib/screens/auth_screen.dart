@@ -26,9 +26,8 @@ class _AuthScreenState extends State<AuthScreen> {
   Future<void> _connexion() async {
     setState(() { _loading = true; _erreur = null; });
     try {
-      final data = await Services.auth.connexion(_identifiantCtrl.text.trim());
-      final type = data['utilisateur']['type_utilisateur'] ?? 'ETUDIANT';
-      if (mounted) Navigator.pushReplacementNamed(context, type == 'ETUDIANT' ? '/etudiant' : '/etudiant');
+      await Services.auth.connexion(_identifiantCtrl.text.trim());
+      if (mounted) Navigator.pushReplacementNamed(context, '/etudiant');
     } catch (e) {
       setState(() { _erreur = e.toString().replaceAll('Exception: ', ''); });
     } finally {

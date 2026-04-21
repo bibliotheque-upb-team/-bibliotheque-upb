@@ -25,7 +25,7 @@ class _EtudiantProfilState extends State<EtudiantProfil> {
   Future<void> _chargerDonnees() async {
     try {
       final userId = await Services.auth.getUserId();
-      final userName = await Services.auth.getUserType();
+      final userName = await Services.auth.getUserName();
       if (userId != null) {
         _userId = userId;
         final notifs = await Services.notifications.mesNotifications(userId);

@@ -25,7 +25,7 @@ class _EtudiantHomeState extends State<EtudiantHome> {
   Future<void> _chargerDonnees() async {
     try {
       final userId = await Services.auth.getUserId();
-      final userName = await Services.auth.getUserType();
+      final userName = await Services.auth.getUserName();
       final livres = await Services.livres.listerTous();
       List emprunts = [];
       List reservations = [];

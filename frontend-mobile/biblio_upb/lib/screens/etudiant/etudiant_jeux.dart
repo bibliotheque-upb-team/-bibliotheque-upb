@@ -95,7 +95,7 @@ class _EtudiantJeuxState extends State<EtudiantJeux> with SingleTickerProviderSt
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(q['titre'] ?? 'Quiz', style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold)),
-                            Text('${q['pointsRecompense'] ?? 0} points', style: GoogleFonts.poppins(color: Colors.white70, fontSize: 12)),
+                            Text('${q['pointsAGagner'] ?? 0} points', style: GoogleFonts.poppins(color: Colors.white70, fontSize: 12)),
                           ],
                         ),
                       ),
