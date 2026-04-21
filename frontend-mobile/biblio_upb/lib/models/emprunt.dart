@@ -29,5 +29,5 @@ class Emprunt {
 
   String get titreLivre => livre?['titre'] ?? 'Livre inconnu';
   bool get enRetard => statut == 'EN_RETARD';
-  bool get peutProlonger => nombreProlongations == 0;
+  bool get peutProlonger => nombreProlongations < 2;
 }

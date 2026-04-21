@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:biblio_upb/services/service_locator.dart';
+
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
   @override
@@ -14,6 +15,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   // Connexion
   final _identifiantCtrl = TextEditingController();
+  final _mdpConnexionCtrl = TextEditingController();
 
   // Inscription
   final _emailCtrl = TextEditingController();
@@ -23,30 +25,57 @@ class _AuthScreenState extends State<AuthScreen> {
   final _filiereCtrl = TextEditingController();
   final _anneeCtrl = TextEditingController();
 
+  @override
+  void dispose() {
+    _identifiantCtrl.dispose();
+    _mdpConnexionCtrl.dispose();
+    _emailCtrl.dispose();
+    _mdpCtrl.dispose();
+    _nomCtrl.dispose();
+    _prenomCtrl.dispose();
+    _filiereCtrl.dispose();
+    _anneeCtrl.dispose();
+    super.dispose();
+  }
+
   Future<void> _connexion() async {
+    final identifiant = _identifiantCtrl.text.trim();
+    final motDePasse = _mdpConnexionCtrl.text;
+    if (identifiant.isEmpty || motDePasse.isEmpty) {
+      setState(() => _erreur = 'Veuillez remplir tous les champs');
+      return;
+    }
     setState(() { _loading = true; _erreur = null; });
     try {
-      await Services.auth.connexion(_identifiantCtrl.text.trim());
+      await Services.auth.connexion(identifiant, motDePasse);
       if (mounted) Navigator.pushReplacementNamed(context, '/etudiant');
     } catch (e) {
       setState(() { _erreur = e.toString().replaceAll('Exception: ', ''); });
     } finally {
-      setState(() { _loading = false; });
+      if (mounted) setState(() { _loading = false; });
     }
   }
 
   Future<void> _inscription() async {
+    if (_emailCtrl.text.trim().isEmpty || _mdpCtrl.text.isEmpty ||
+        _nomCtrl.text.trim().isEmpty || _prenomCtrl.text.trim().isEmpty) {
+      setState(() => _erreur = 'Veuillez remplir tous les champs obligatoires');
+      return;
+    }
     setState(() { _loading = true; _erreur = null; });
     try {
       await Services.auth.inscription(
-          email: _emailCtrl.text.trim(), motDePasse: _mdpCtrl.text.trim(),
-          nom: _nomCtrl.text.trim(), prenom: _prenomCtrl.text.trim(),
-          filiere: _filiereCtrl.text.trim(), anneeEtude: _anneeCtrl.text.trim());
+          email: _emailCtrl.text.trim(),
+          motDePasse: _mdpCtrl.text,
+          nom: _nomCtrl.text.trim(),
+          prenom: _prenomCtrl.text.trim(),
+          filiere: _filiereCtrl.text.trim(),
+          anneeEtude: _anneeCtrl.text.trim());
       if (mounted) Navigator.pushReplacementNamed(context, '/etudiant');
     } catch (e) {
       setState(() { _erreur = e.toString().replaceAll('Exception: ', ''); });
     } finally {
-      setState(() { _loading = false; });
+      if (mounted) setState(() { _loading = false; });
     }
   }
 
@@ -85,12 +114,20 @@ class _AuthScreenState extends State<AuthScreen> {
                             labelText: 'Identifiant',
                             border: OutlineInputBorder(),
                             prefixIcon: Icon(Icons.person))),
+                    const SizedBox(height: 12),
+                    TextField(
+                        controller: _mdpConnexionCtrl,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                            labelText: 'Mot de passe',
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.lock))),
                   ] else ...[
                     TextField(controller: _prenomCtrl, decoration: const InputDecoration(labelText: 'Prénom', border: OutlineInputBorder())),
                     const SizedBox(height: 12),
                     TextField(controller: _nomCtrl, decoration: const InputDecoration(labelText: 'Nom', border: OutlineInputBorder())),
                     const SizedBox(height: 12),
-                    TextField(controller: _emailCtrl, decoration: const InputDecoration(labelText: 'Email', border: OutlineInputBorder())),
+                    TextField(controller: _emailCtrl, keyboardType: TextInputType.emailAddress, decoration: const InputDecoration(labelText: 'Email', border: OutlineInputBorder())),
                     const SizedBox(height: 12),
                     TextField(controller: _mdpCtrl, obscureText: true, decoration: const InputDecoration(labelText: 'Mot de passe', border: OutlineInputBorder())),
                     const SizedBox(height: 12),

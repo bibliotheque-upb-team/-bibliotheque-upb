@@ -54,6 +54,7 @@ class _EtudiantMesLivresState extends State<EtudiantMesLivres> with SingleTicker
   }
 
   Future<void> _prolonger(int empruntId) async {
+    if (_userId == null) return;
     try {
       await Services.emprunts.prolonger(empruntId, _userId!);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -151,7 +152,7 @@ class _EtudiantMesLivresState extends State<EtudiantMesLivres> with SingleTicker
                           children: [
                             Expanded(
                               child: OutlinedButton.icon(
-                                onPressed: () => _retourner(emprunt.empruntId!),
+                                onPressed: emprunt.empruntId == null ? null : () => _retourner(emprunt.empruntId!),
                                 icon: const Icon(Icons.assignment_return, size: 16),
                                 label: const Text('Retourner'),
                                 style: OutlinedButton.styleFrom(foregroundColor: const Color(0xFF2563EB)),
@@ -161,7 +162,7 @@ class _EtudiantMesLivresState extends State<EtudiantMesLivres> with SingleTicker
                             if (emprunt.peutProlonger && !emprunt.enRetard)
                               Expanded(
                                 child: ElevatedButton.icon(
-                                  onPressed: () => _prolonger(emprunt.empruntId!),
+                                  onPressed: emprunt.empruntId == null ? null : () => _prolonger(emprunt.empruntId!),
                                   icon: const Icon(Icons.update, size: 16),
                                   label: const Text('Prolonger'),
                                   style: ElevatedButton.styleFrom(
@@ -208,7 +209,7 @@ class _EtudiantMesLivresState extends State<EtudiantMesLivres> with SingleTicker
                           ),
                         ),
                         TextButton(
-                          onPressed: () => _annulerReservation(reservation.reservationId!),
+                          onPressed: reservation.reservationId == null ? null : () => _annulerReservation(reservation.reservationId!),
                           child: const Text('Annuler', style: TextStyle(color: Colors.red)),
                         ),
                       ],
