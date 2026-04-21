@@ -29,10 +29,13 @@ class EmpruntService {
   Future<void> prolonger(int empruntId, int etudiantId) async {
     final h = await auth.authHeaders();
     final r = await http.put(
-        Uri.parse('$baseUrl/emprunts/$empruntId/prolonger?etudiantId=$etudiantId'),
-        headers: h);
-    if (r.statusCode != 200)
-      throw Exception(jsonDecode(r.body)['message'] ?? 'Erreur');
+        Uri.parse('$baseUrl/emprunts/$empruntId/prolonger'),
+        headers: h,
+        body: jsonEncode({'etudiantId': etudiantId}));
+    if (r.statusCode != 200) {
+      final err = jsonDecode(r.body);
+      throw Exception(err['erreur'] ?? err['message'] ?? 'Erreur prolongation');
+    }
   }
 
   Future<List<Reservation>> mesReservations(int id) async {

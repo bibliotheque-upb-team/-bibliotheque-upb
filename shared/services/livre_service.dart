@@ -48,18 +48,24 @@ class LivreService {
   Future<void> emprunter(int eId, int lId) async {
     final h = await auth.authHeaders();
     final r = await http.post(
-        Uri.parse('$baseUrl/emprunts?etudiantId=$eId&livreId=$lId'),
-        headers: h);
-    if (r.statusCode != 200)
-      throw Exception(jsonDecode(r.body)['message'] ?? 'Erreur');
+        Uri.parse('$baseUrl/emprunts'),
+        headers: h,
+        body: jsonEncode({'etudiantId': eId, 'livreId': lId}));
+    if (r.statusCode != 200) {
+      final err = jsonDecode(r.body);
+      throw Exception(err['erreur'] ?? err['message'] ?? 'Erreur emprunt');
+    }
   }
 
   Future<void> reserver(int eId, int lId) async {
     final h = await auth.authHeaders();
     final r = await http.post(
-        Uri.parse('$baseUrl/reservations?etudiantId=$eId&livreId=$lId'),
-        headers: h);
-    if (r.statusCode != 200)
-      throw Exception(jsonDecode(r.body)['message'] ?? 'Erreur');
+        Uri.parse('$baseUrl/reservations'),
+        headers: h,
+        body: jsonEncode({'etudiantId': eId, 'livreId': lId}));
+    if (r.statusCode != 200) {
+      final err = jsonDecode(r.body);
+      throw Exception(err['erreur'] ?? err['message'] ?? 'Erreur réservation');
+    }
   }
 }

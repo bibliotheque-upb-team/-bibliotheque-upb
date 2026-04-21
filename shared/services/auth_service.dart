@@ -6,11 +6,11 @@ class AuthService {
   final String baseUrl;
   AuthService(this.baseUrl);
 
-  Future<Map<String, dynamic>> connexion(String identifiant) async {
+  Future<Map<String, dynamic>> connexion(String identifiant, String motDePasse) async {
     final r = await http.post(
       Uri.parse('$baseUrl/auth/connexion'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'identifiant': identifiant}),
+      body: jsonEncode({'identifiant': identifiant, 'motDePasse': motDePasse}),
     );
     if (r.statusCode == 200) {
       final data = jsonDecode(r.body);
@@ -22,7 +22,8 @@ class AuthService {
       await prefs.setString('userType', data['utilisateur']['type_utilisateur'] ?? 'ETUDIANT');
       return data;
     }
-    throw Exception(jsonDecode(r.body)['message'] ?? 'Erreur');
+    final err = jsonDecode(r.body);
+    throw Exception(err['erreur'] ?? err['message'] ?? 'Erreur de connexion');
   }
 
   Future<Map<String, dynamic>> inscription({
@@ -43,16 +44,20 @@ class AuthService {
         'prenom': prenom,
         'filiere': filiere,
         'anneeEtude': anneeEtude,
-        'role': 'STUDENT',
+        'role': 'ETUDIANT',
       }),
     );
     if (r.statusCode == 200) {
       final data = jsonDecode(r.body);
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', data['token']);
+      await prefs.setString('userName', '${data['utilisateur']['prenom']} ${data['utilisateur']['nom']}');
+      await prefs.setInt('userId', data['utilisateur']['utilisateurId'] ?? 0);
+      await prefs.setString('userType', data['utilisateur']['type_utilisateur'] ?? 'ETUDIANT');
       return data;
     }
-    throw Exception(jsonDecode(r.body)['message'] ?? 'Erreur');
+    final err = jsonDecode(r.body);
+    throw Exception(err['erreur'] ?? err['message'] ?? 'Erreur inscription');
   }
 
   Future<String?> getToken() async =>
@@ -63,6 +68,9 @@ class AuthService {
 
   Future<String?> getUserType() async =>
       (await SharedPreferences.getInstance()).getString('userType');
+
+  Future<String?> getUserName() async =>
+      (await SharedPreferences.getInstance()).getString('userName');
 
   Future<void> deconnexion() async =>
       (await SharedPreferences.getInstance()).clear();
