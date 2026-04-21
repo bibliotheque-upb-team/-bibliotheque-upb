@@ -18,7 +18,8 @@ class AuthService {
       await prefs.setString('token', data['token']);
       await prefs.setInt('userId', data['utilisateur']['utilisateurId'] ?? 0);
       await prefs.setString('userIdentifiant', data['utilisateur']['identifiant'] ?? '');
-      await prefs.setString('userName', '${data['utilisateur']['prenom']} ${data['utilisateur']['nom']}');
+      await prefs.setString('userName',
+          '${data['utilisateur']['prenom'] ?? ''} ${data['utilisateur']['nom'] ?? ''}'.trim());
       await prefs.setString('userType', data['utilisateur']['type_utilisateur'] ?? 'ETUDIANT');
       return data;
     }
@@ -51,8 +52,10 @@ class AuthService {
       final data = jsonDecode(r.body);
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', data['token']);
-      await prefs.setString('userName', '${data['utilisateur']['prenom']} ${data['utilisateur']['nom']}');
       await prefs.setInt('userId', data['utilisateur']['utilisateurId'] ?? 0);
+      await prefs.setString('userIdentifiant', data['utilisateur']['identifiant'] ?? '');
+      await prefs.setString('userName',
+          '${data['utilisateur']['prenom'] ?? ''} ${data['utilisateur']['nom'] ?? ''}'.trim());
       await prefs.setString('userType', data['utilisateur']['type_utilisateur'] ?? 'ETUDIANT');
       return data;
     }
@@ -68,6 +71,9 @@ class AuthService {
 
   Future<String?> getUserType() async =>
       (await SharedPreferences.getInstance()).getString('userType');
+
+  Future<String?> getIdentifiant() async =>
+      (await SharedPreferences.getInstance()).getString('userIdentifiant');
 
   Future<String?> getUserName() async =>
       (await SharedPreferences.getInstance()).getString('userName');
