@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/auth_screen_web.dart';
 import 'screens/biblio/biblio_app.dart';
+import 'screens/admin/admin_app.dart';
 
 void main() => runApp(const BibliothequeWebApp());
 
@@ -10,7 +11,7 @@ class BibliothequeWebApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Bibliothèque UPB — Administration',
+      title: 'Bibliothèque UPB',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
@@ -20,8 +21,7 @@ class BibliothequeWebApp extends StatelessWidget {
       routes: {
         '/login': (_) => const AuthScreenWeb(),
         '/biblio': (_) => const BiblioApp(),
-        '/admin': (_) => const Scaffold(
-            body: Center(child: Text('Séance 9'))),
+        '/admin': (_) => const AdminApp(),
       },
     );
   }

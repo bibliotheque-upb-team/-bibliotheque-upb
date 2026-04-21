@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/service_locator.dart';
 
 class AuthScreenWeb extends StatefulWidget {
   const AuthScreenWeb({super.key});
@@ -9,36 +10,33 @@ class AuthScreenWeb extends StatefulWidget {
 
 class _AuthScreenWebState extends State<AuthScreenWeb> {
   final TextEditingController _idController = TextEditingController();
+  final TextEditingController _pwdController = TextEditingController();
   bool _isLoading = false;
   String? _erreur;
 
   Future<void> _connexion() async {
-    setState(() {
-      _isLoading = true;
-      _erreur = null;
-    });
-
     final identifiant = _idController.text.trim();
-
-    if (identifiant.isEmpty) {
-      setState(() {
-        _erreur = 'Veuillez entrer votre identifiant';
-        _isLoading = false;
-      });
+    final motDePasse = _pwdController.text;
+    if (identifiant.isEmpty || motDePasse.isEmpty) {
+      setState(() => _erreur = 'Veuillez remplir tous les champs');
       return;
     }
-
-    await Future.delayed(const Duration(seconds: 1));
-
-    if (identifiant.startsWith('LIB')) {
-      Navigator.pushReplacementNamed(context, '/biblio');
-    } else if (identifiant.startsWith('ADM')) {
-      Navigator.pushReplacementNamed(context, '/admin');
-    } else {
-      setState(() {
-        _erreur = 'Accès non autorisé. Utilisez un compte bibliothécaire ou administrateur.';
-        _isLoading = false;
-      });
+    setState(() { _isLoading = true; _erreur = null; });
+    try {
+      final data = await Services.auth.connexion(identifiant, motDePasse);
+      final type = data['utilisateur']?['type_utilisateur'] ?? '';
+      if (!mounted) return;
+      if (type == 'BIBLIOTHECAIRE') {
+        Navigator.pushReplacementNamed(context, '/biblio');
+      } else if (type == 'ADMINISTRATEUR') {
+        Navigator.pushReplacementNamed(context, '/admin');
+      } else {
+        setState(() => _erreur = 'Accès non autorisé. Utilisez un compte bibliothécaire ou administrateur.');
+      }
+    } catch (e) {
+      setState(() => _erreur = e.toString().replaceAll('Exception: ', ''));
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -109,6 +107,36 @@ class _AuthScreenWebState extends State<AuthScreenWeb> {
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 ),
               ),
+              const SizedBox(height: 16),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'MOT DE PASSE',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 1,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _pwdController,
+                obscureText: true,
+                onSubmitted: (_) => _connexion(),
+                decoration: InputDecoration(
+                  hintText: '••••••••',
+                  hintStyle: TextStyle(color: Colors.grey[400], fontSize: 14),
+                  filled: true,
+                  fillColor: const Color(0xFFF0F2F5),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                ),
+              ),
               if (_erreur != null) ...[
                 const SizedBox(height: 8),
                 Text(_erreur!, style: const TextStyle(color: Colors.red, fontSize: 12)),
@@ -121,10 +149,10 @@ class _AuthScreenWebState extends State<AuthScreenWeb> {
                   onPressed: _isLoading ? null : _connexion,
                   icon: _isLoading
                       ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-                  )
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                        )
                       : const Icon(Icons.arrow_forward, color: Colors.white),
                   label: Text(
                     _isLoading ? 'Connexion...' : 'ACCÉDER',
