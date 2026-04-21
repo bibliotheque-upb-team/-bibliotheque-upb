@@ -35,7 +35,7 @@ public class AuthController {
 
     @PostMapping("/connexion")
     public ResponseEntity<?> connexion(@RequestBody Map<String, String> body) {
-        Utilisateur user = utilisateurService.seConnecter(body.get("identifiant"));
+        Utilisateur user = utilisateurService.seConnecter(body.get("identifiant"), body.get("motDePasse"));
         String role = user instanceof Administrateur ? "ADMINISTRATEUR"
             : user instanceof Bibliothecaire ? "BIBLIOTHECAIRE" : "ETUDIANT";
         return ResponseEntity.ok(Map.of(

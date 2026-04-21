@@ -33,4 +33,14 @@ public class Utilisateur {
 
     private LocalDateTime dateCreation = LocalDateTime.now();
     private boolean actif = true;
+
+    @Transient
+    @JsonProperty("type_utilisateur")
+    public String getTypeUtilisateur() {
+        return switch (getClass().getSimpleName()) {
+            case "Administrateur" -> "ADMINISTRATEUR";
+            case "Bibliothecaire" -> "BIBLIOTHECAIRE";
+            default -> "ETUDIANT";
+        };
+    }
 }

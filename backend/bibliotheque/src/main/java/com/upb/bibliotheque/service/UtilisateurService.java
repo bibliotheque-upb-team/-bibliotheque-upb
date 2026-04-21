@@ -3,6 +3,7 @@ package com.upb.bibliotheque.service;
 import com.upb.bibliotheque.entity.*;
 import com.upb.bibliotheque.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.*;
 
@@ -12,6 +13,7 @@ public class UtilisateurService {
     private final UtilisateurRepository utilisateurRepo;
     private final EtudiantRepository etudiantRepo;
     private final AuditService auditService;
+    private final PasswordEncoder passwordEncoder;
 
     public Utilisateur inscrire(String email, String motDePasse, String nom, String prenom,
                                 String filiere, String anneeEtude, String role) {
@@ -45,10 +47,12 @@ public class UtilisateurService {
         return user;
     }
 
-    public Utilisateur seConnecter(String identifiant) {
+    public Utilisateur seConnecter(String identifiant, String motDePasse) {
         Utilisateur user = utilisateurRepo.findByIdentifiant(identifiant)
             .orElseThrow(() -> new RuntimeException("Identifiant non trouvé"));
         if (!user.isActif()) throw new RuntimeException("Compte désactivé");
+        if (!passwordEncoder.matches(motDePasse, user.getMotDePasse()))
+            throw new RuntimeException("Mot de passe incorrect");
         auditService.enregistrer("CONNEXION", "Connexion : " + identifiant, user);
         return user;
     }
