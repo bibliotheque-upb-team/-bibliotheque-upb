@@ -41,7 +41,7 @@ flutter run -d chrome
 
 - Java 17+
 - Maven 3.8+
-- SQLite (via DB Browser)
+- PostreSQL
 - Flutter 3.16+
 
 ## 📅 Planning
